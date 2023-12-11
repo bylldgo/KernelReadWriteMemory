@@ -1,3 +1,5 @@
+// allahınızı s1keyim
+
 #include <ntdef.h>
 #include <ntifs.h>
 #include <ntddk.h>
@@ -47,13 +49,13 @@ NTSTATUS KernelWriteVirtualMemory(PEPROCESS TargetProcess, PVOID SourceAddress, 
 
 NTSTATUS ImageLoadCallback(PUNICODE_STRING FullImageName, HANDLE ProcessId, PIMAGE_INFO ImageInfo) {
     if (wcsstr(FullImageName->Buffer, L"\\Genshin Impact\\Genshin Impact game\\GenshinImpact.exe")) {
-        ClientAddress = (ULONG)ImageInfo->ImageBase;
-        processId = (ULONG)HandleToUlong(ProcessId);
+        ClientAddress = (ULONG)(ULONG_PTR)ImageInfo->ImageBase;
+        processId = (ULONG)(ULONG_PTR)HandleToUlong(ProcessId);
+
     }
 
     return STATUS_SUCCESS;
 }
-
 
 NTSTATUS IoControl(PDEVICE_OBJECT DeviceObject, PIRP Irp) {
     UNREFERENCED_PARAMETER(DeviceObject);
@@ -151,10 +153,10 @@ DriverEntry(
     WDF_DRIVER_CONFIG_INIT(&config, MyEvtDeviceAdd);
 
     status = WdfDriverCreate(DriverObject,
-                             RegistryPath,
-                             WDF_NO_OBJECT_ATTRIBUTES,
-                             &config,
-                             WDF_NO_HANDLE);
+        RegistryPath,
+        WDF_NO_OBJECT_ATTRIBUTES,
+        &config,
+        WDF_NO_HANDLE);
 
     return status;
 }
