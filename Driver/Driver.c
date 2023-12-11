@@ -1,5 +1,3 @@
-// allahınızı s1keyim
-
 #include <ntdef.h>
 #include <ntifs.h>
 #include <ntddk.h>
@@ -48,12 +46,14 @@ NTSTATUS KernelWriteVirtualMemory(PEPROCESS TargetProcess, PVOID SourceAddress, 
 }
 
 NTSTATUS ImageLoadCallback(PUNICODE_STRING FullImageName, HANDLE ProcessId, PIMAGE_INFO ImageInfo) {
-    if (wcsstr(FullImageName->Buffer, L"\\Genshin Impact\\Genshin Impact game\\GenshinImpact.exe")) {
+    UNICODE_STRING uName;
+    RtlInitUnicodeString(&uName, L"GenshinImpact.exe");
+
+    if (RtlEqualUnicodeString(&uName, FullImageName, TRUE)) {
         ClientAddress = (ULONG)(ULONG_PTR)ImageInfo->ImageBase;
         processId = (ULONG)(ULONG_PTR)HandleToUlong(ProcessId);
-
     }
-
+ 
     return STATUS_SUCCESS;
 }
 
